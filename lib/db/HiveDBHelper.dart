@@ -3,14 +3,10 @@ import 'package:hive/hive.dart';
 import 'DBHelper.dart';
 
 class HiveDBHelper implements DBHelper {
-
   @override
   void addNewCounter() {
     var box = Hive.box("counter");
-    int i = box.values.length;
-    print(i);
-    i++;
-    box.put(i, 0);
+    box.add(0);
   }
 
   @override
@@ -39,4 +35,9 @@ class HiveDBHelper implements DBHelper {
     return i;
   }
 
+  @override
+  void deleteCounter(int index) {
+    var box = Hive.box("counter");
+    box.deleteAt(index);
+  }
 }

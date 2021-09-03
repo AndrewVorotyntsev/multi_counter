@@ -14,11 +14,11 @@ void main() async {
 }
 
 class MyApp extends StatelessWidget {
-
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) => CountersListBloc()..add(GetCountersEvent()),
+        create: (BuildContext context) =>
+            CountersListBloc()..add(GetCountersEvent()),
         child: MaterialApp(
           title: 'Flutter Demo',
           theme: ThemeData(

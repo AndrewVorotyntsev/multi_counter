@@ -1,5 +1,4 @@
 abstract class DBHelper {
-
   void addNewCounter();
 
   List<int> getListCounters();
@@ -8,4 +7,5 @@ abstract class DBHelper {
 
   int getValue(int index);
 
+  void deleteCounter(int index);
 }

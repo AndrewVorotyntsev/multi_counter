@@ -36,14 +36,25 @@ class _CounterListPageState extends State<CounterListPage> {
                 itemCount: list.length,
                 itemBuilder: (context, index) {
                   int? res = list.elementAt(index);
-                  return ListTile(
-                    title: Text("$res"),
-                    onTap: () {
-                      Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => BlocProvider(
-                              create: (BuildContext context) => CounterBloc(res),
-                              child: CounterPage(index: index))));
-                    },
+                  return Dismissible(
+                    key: UniqueKey(),
+                    //key: ValueKey<int>(index),
+                    child: ListTile(
+                      title: Text("$res"),
+                      onTap: () {
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (context) => BlocProvider(
+                                create: (BuildContext context) =>
+                                    CounterBloc(res),
+                                child: CounterPage(index: index))));
+                      },
+                    ),
+                    background: Container(
+                      color: Colors.grey[200],
+                    ),
+                    onDismissed: (DismissDirection direction) {
+                      context.read<CountersListBloc>().add(DeleteCounterEvent(index));
+                  },
                   );
                 },
               );
@@ -54,7 +65,7 @@ class _CounterListPageState extends State<CounterListPage> {
           onPressed: () =>
               context.read<CountersListBloc>().add(AddNewCounterEvent()),
           tooltip: 'Add counter',
-          child: Icon(Icons.add_box_outlined),
+          child: Icon(Icons.add_circle_outline),
         ));
   }
 }
