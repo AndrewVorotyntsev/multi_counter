@@ -39,12 +39,12 @@ class _CounterPageState extends State<CounterPage> {
                     children: <Widget>[
                   Padding(
                     padding: EdgeInsets.symmetric(vertical: 16),
-                    child: Text('${count.name}',
-                        style: TextStyle(fontSize: 40)),
+                    child:
+                        Text('${count.name}', style: TextStyle(fontSize: 40)),
                   ),
                   Center(
-                    child: Text('${count.count}',
-                        style: TextStyle(fontSize: 30)),
+                    child:
+                        Text('${count.count}', style: TextStyle(fontSize: 30)),
                   ),
                 ]));
           },
@@ -55,33 +55,107 @@ class _CounterPageState extends State<CounterPage> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: FloatingActionButton(
-                heroTag: "addBtn",
-                //onPressed: _incrementCounter,
-                onPressed: () {
-                  context.read<CounterBloc>().add(ChangeValueEvent(index, 1));
-                  context.read<CountersListBloc>().add(GetCountersEvent());
-                }, //context.read<CounterBloc>().add(ChangeValueEvent(index, 1)),
-                tooltip: 'Increment',
-                child: Icon(Icons.add),
+              child: GestureDetector(
+                onLongPress: () {
+                  createDialog(context, 1);
+                },
+                child: InkWell(
+                  splashColor: Colors.blue,
+                  child: FloatingActionButton(
+                    heroTag: "addBtn",
+                    //onPressed: _incrementCounter,
+                    onPressed: () {
+                      context
+                          .read<CounterBloc>()
+                          .add(ChangeValueEvent(index, 1));
+                      context.read<CountersListBloc>().add(GetCountersEvent());
+                    }, //context.read<CounterBloc>().add(ChangeValueEvent(index, 1)),
+                    //tooltip: 'Increment',
+                    child: Icon(Icons.add),
+                  ),
+                ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: FloatingActionButton(
-                heroTag: "remBtn",
-                //onPressed: _decrementCounter,
-                onPressed: () {
-                  context.read<CounterBloc>().add(ChangeValueEvent(index, -1));
-                  context.read<CountersListBloc>().add(GetCountersEvent());
-                },
-                tooltip: 'Increment',
-                child: Icon(Icons.remove),
-              ),
-            ),
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                child: GestureDetector(
+                    onLongPress: () {
+                      createDialog(context, -1);
+                    },
+                    child: InkWell(
+                      splashColor: Colors.blue,
+                      child: FloatingActionButton(
+                        heroTag: "remBtn",
+                        //onPressed: _decrementCounter,
+                        onPressed: () {
+                          context
+                              .read<CounterBloc>()
+                              .add(ChangeValueEvent(index, -1));
+                          context
+                              .read<CountersListBloc>()
+                              .add(GetCountersEvent());
+                        },
+                        child: Icon(Icons.remove),
+                      ),
+                    ))),
           ],
         ),
       ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  createDialog(BuildContext context, int sign) {
+
+    BuildContext c = context;
+
+    // context
+    //     .read<CounterBloc>()
+    //     .add(ChangeValueEvent(index, 100 * sign));
+
+    TextEditingController countController = TextEditingController();
+    countController.text = "${1}";
+
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text((() {
+              if (sign == 1) {
+                return "Увеличить счет";
+              } else {
+                return "Уменьшить счет";
+              }
+            })()),
+            content: TextField(
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: "",
+                border: OutlineInputBorder(),
+                hintText: 'Не увеличивать',
+              ),
+              controller: countController,
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                child: Text("Назад"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              MaterialButton(
+                child: Text("Ок"),
+                onPressed: () {
+                  c
+                      .read<CounterBloc>()
+                      .add(ChangeValueEvent(index, int.parse(countController.text) * sign));
+                  c
+                      .read<CountersListBloc>()
+                      .add(GetCountersEvent());
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 }

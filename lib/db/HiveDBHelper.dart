@@ -32,6 +32,7 @@ class HiveDBHelper implements DBHelper {
     var box = Hive.box<CounterModel>("counter");
     CounterModel? counterModel = box.getAt(index);
     counterModel!.count = counterModel.count + change;
+    counterModel.save();
   }
 
   @override
