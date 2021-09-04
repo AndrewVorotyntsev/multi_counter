@@ -57,7 +57,7 @@ class _CounterPageState extends State<CounterPage> {
               padding: const EdgeInsets.symmetric(vertical: 5.0),
               child: GestureDetector(
                 onLongPress: () {
-                  createDialog(context, 1);
+                  _createDialog(context, 1);
                 },
                 child: InkWell(
                   splashColor: Colors.blue,
@@ -80,7 +80,7 @@ class _CounterPageState extends State<CounterPage> {
                 padding: const EdgeInsets.symmetric(vertical: 5.0),
                 child: GestureDetector(
                     onLongPress: () {
-                      createDialog(context, -1);
+                      _createDialog(context, -1);
                     },
                     child: InkWell(
                       splashColor: Colors.blue,
@@ -104,7 +104,7 @@ class _CounterPageState extends State<CounterPage> {
     );
   }
 
-  createDialog(BuildContext context, int sign) {
+  _createDialog(BuildContext context, int sign) {
 
     BuildContext c = context;
 

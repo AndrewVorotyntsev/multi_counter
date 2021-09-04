@@ -72,13 +72,13 @@ class _CounterListPageState extends State<CounterListPage> {
           },
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () => createDialog(context),
+          onPressed: () => _createDialog(context),
           tooltip: 'Add counter',
           child: Icon(Icons.add_circle_outline),
         ));
   }
 
-  createDialog(BuildContext context) {
+  _createDialog(BuildContext context) {
     TextEditingController nameController = TextEditingController();
     TextEditingController countController = TextEditingController();
     countController.text = "${0}";
