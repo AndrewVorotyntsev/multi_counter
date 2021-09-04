@@ -89,11 +89,10 @@ class _CounterListPageState extends State<CounterListPage> {
           return AlertDialog(
             title: Text("Новый счетчик"),
             content: FractionallySizedBox(
-              heightFactor: 0.25,
+              heightFactor: 0.5,
               child: Column(
                 children: [
                   TextField(
-                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: "Название",
                       border: OutlineInputBorder(),
@@ -103,6 +102,7 @@ class _CounterListPageState extends State<CounterListPage> {
                   ),
                   Padding(padding: EdgeInsets.symmetric(vertical: 10)),
                   TextField(
+                    keyboardType: TextInputType.number,
                     decoration: InputDecoration(
                       labelText: "Счет",
                       border: OutlineInputBorder(),
