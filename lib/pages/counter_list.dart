@@ -4,6 +4,7 @@ import 'package:multi_counter/bloc/counter_bloc.dart';
 import 'package:multi_counter/bloc/counters_list_bloc.dart';
 import 'package:multi_counter/bloc/events/counters_list_events.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:multi_counter/model/CounterData.dart';
 
 import 'counter_page.dart';
 
@@ -25,8 +26,8 @@ class _CounterListPageState extends State<CounterListPage> {
         appBar: AppBar(
           title: Text("Сounters"),
         ),
-        body: BlocBuilder<CountersListBloc, List<int>>(
-          builder: (context, List<int> list) {
+        body: BlocBuilder<CountersListBloc, List<CounterData>>(
+          builder: (context, List<CounterData> list) {
             if (list.isEmpty)
               return Center(
                 child: Text("Добавьте счетчик"),
@@ -35,12 +36,19 @@ class _CounterListPageState extends State<CounterListPage> {
               return ListView.builder(
                 itemCount: list.length,
                 itemBuilder: (context, index) {
-                  int? res = list.elementAt(index);
+                  CounterData? res = list.elementAt(index);
                   return Dismissible(
                     key: UniqueKey(),
                     //key: ValueKey<int>(index),
                     child: ListTile(
-                      title: Text("$res"),
+                      // Text("${res.name} ${res.name.isEmpty : } : ${res.count}"),
+                      title: Text((() {
+                        if (res.name.isEmpty) {
+                          return "${res.count}";
+                        } else {
+                          return "${res.name} : ${res.count}";
+                        }
+                      })()),
                       onTap: () {
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => BlocProvider(
@@ -53,8 +61,10 @@ class _CounterListPageState extends State<CounterListPage> {
                       color: Colors.grey[200],
                     ),
                     onDismissed: (DismissDirection direction) {
-                      context.read<CountersListBloc>().add(DeleteCounterEvent(index));
-                  },
+                      context
+                          .read<CountersListBloc>()
+                          .add(DeleteCounterEvent(index));
+                    },
                   );
                 },
               );
@@ -62,10 +72,46 @@ class _CounterListPageState extends State<CounterListPage> {
           },
         ),
         floatingActionButton: FloatingActionButton(
-          onPressed: () =>
-              context.read<CountersListBloc>().add(AddNewCounterEvent()),
+          onPressed: () => createDialog(context),
           tooltip: 'Add counter',
           child: Icon(Icons.add_circle_outline),
         ));
+  }
+
+  createDialog(BuildContext context) {
+    TextEditingController controller = TextEditingController();
+
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text("Название"),
+            content: TextField(
+              decoration :
+              InputDecoration(
+                border: OutlineInputBorder(),
+                hintText: 'Без названия',
+              ),
+              controller: controller,
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                child: Text("Назад"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              MaterialButton(
+                child: Text("Ок"),
+                onPressed: () {
+                  context
+                      .read<CountersListBloc>()
+                      .add(AddNewCounterEvent(controller.text));
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 }

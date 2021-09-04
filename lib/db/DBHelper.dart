@@ -1,11 +1,13 @@
-abstract class DBHelper {
-  void addNewCounter();
+import 'package:multi_counter/model/CounterData.dart';
 
-  List<int> getListCounters();
+abstract class DBHelper {
+  void addNewCounter(String name) ;
+
+  List<CounterData> getListCounters();
 
   void changeCounterValue(int index, int change);
 
-  int getValue(int index);
+  CounterData getCounter(int index);
 
   void deleteCounter(int index);
 }

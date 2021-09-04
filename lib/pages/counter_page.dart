@@ -5,6 +5,7 @@ import 'package:multi_counter/bloc/events/counters_list_events.dart';
 
 import 'package:multi_counter/bloc/counter_bloc.dart';
 import 'package:multi_counter/bloc/events/counter_events.dart';
+import 'package:multi_counter/model/CounterData.dart';
 
 class CounterPage extends StatefulWidget {
   int index;
@@ -29,23 +30,24 @@ class _CounterPageState extends State<CounterPage> {
         appBar: AppBar(
           title: Text("Counter"),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'You have pushed the button this many times:',
-              ),
-              BlocBuilder<CounterBloc, int>(
-                /* state: int count */
-                builder: (BuildContext context, int count) {
-                  return Center(
-                    child: Text('$count', style: TextStyle(fontSize: 60)),
-                  );
-                },
-              ),
-            ],
-          ),
+        body: BlocBuilder<CounterBloc, CounterData>(
+          /* state: int count */
+          builder: (BuildContext context, CounterData count) {
+            return Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child: Text('${count.name}',
+                        style: TextStyle(fontSize: 40)),
+                  ),
+                  Center(
+                    child: Text('${count.count}',
+                        style: TextStyle(fontSize: 30)),
+                  ),
+                ]));
+          },
         ),
         floatingActionButton: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -78,8 +80,8 @@ class _CounterPageState extends State<CounterPage> {
               ),
             ),
           ],
-        ), // This trailing comma makes auto-formatting nicer for build methods.
-      ),
+        ),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
   }
 }
