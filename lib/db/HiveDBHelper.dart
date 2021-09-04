@@ -6,11 +6,11 @@ import 'DBHelper.dart';
 
 class HiveDBHelper implements DBHelper {
   @override
-  void addNewCounter(String name) {
+  void addNewCounter(String name, int count) {
     var box = Hive.box<CounterModel>("counter");
     CounterModel counterModel = CounterModel()
       ..name = name
-      ..count = 0;
+      ..count = count;
     box.add(counterModel);
   }
 

@@ -4,7 +4,8 @@ class GetCountersEvent extends CountersListEvent {}
 
 class AddNewCounterEvent extends CountersListEvent {
   String name;
-  AddNewCounterEvent(this.name);
+  int count;
+  AddNewCounterEvent(this.name, this.count);
 }
 
 class DeleteCounterEvent extends CountersListEvent {

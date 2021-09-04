@@ -1,7 +1,7 @@
 import 'package:multi_counter/model/CounterData.dart';
 
 abstract class DBHelper {
-  void addNewCounter(String name) ;
+  void addNewCounter(String name, int count);
 
   List<CounterData> getListCounters();
 

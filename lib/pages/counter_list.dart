@@ -79,20 +79,39 @@ class _CounterListPageState extends State<CounterListPage> {
   }
 
   createDialog(BuildContext context) {
-    TextEditingController controller = TextEditingController();
+    TextEditingController nameController = TextEditingController();
+    TextEditingController countController = TextEditingController();
+    countController.text = "${0}";
 
     return showDialog(
         context: context,
         builder: (context) {
           return AlertDialog(
-            title: Text("Название"),
-            content: TextField(
-              decoration :
-              InputDecoration(
-                border: OutlineInputBorder(),
-                hintText: 'Без названия',
+            title: Text("Новый счетчик"),
+            content: FractionallySizedBox(
+              heightFactor: 0.25,
+              child: Column(
+                children: [
+                  TextField(
+                    keyboardType: TextInputType.number,
+                    decoration: InputDecoration(
+                      labelText: "Название",
+                      border: OutlineInputBorder(),
+                      hintText: 'Без названия',
+                    ),
+                    controller: nameController,
+                  ),
+                  Padding(padding: EdgeInsets.symmetric(vertical: 10)),
+                  TextField(
+                    decoration: InputDecoration(
+                      labelText: "Счет",
+                      border: OutlineInputBorder(),
+                      hintText: '0',
+                    ),
+                    controller: countController,
+                  ),
+                ],
               ),
-              controller: controller,
             ),
             actions: <Widget>[
               MaterialButton(
@@ -106,7 +125,7 @@ class _CounterListPageState extends State<CounterListPage> {
                 onPressed: () {
                   context
                       .read<CountersListBloc>()
-                      .add(AddNewCounterEvent(controller.text));
+                      .add(AddNewCounterEvent(nameController.text.trim(), int.parse(countController.text.trim())));
                   Navigator.of(context).pop();
                 },
               ),

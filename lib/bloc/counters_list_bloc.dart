@@ -13,7 +13,7 @@ class CountersListBloc extends Bloc<CountersListEvent, List<CounterData>> {
     DBHelper dbHelper = HiveDBHelper();
 
     if (event is AddNewCounterEvent) {
-      dbHelper.addNewCounter(event.name);
+      dbHelper.addNewCounter(event.name, event.count);
       yield dbHelper.getListCounters();
     } else if (event is GetCountersEvent) {
       yield dbHelper.getListCounters();
