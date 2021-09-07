@@ -38,10 +38,11 @@ class _CounterListPageState extends State<CounterListPage> {
                   int? res = list.elementAt(index);
                   return Dismissible(
                     key: UniqueKey(),
-                    //key: ValueKey<int>(index),
+                    //key: ValueKey<int>(index), //TODO: не оставляйте комментарии без указания причин
                     child: ListTile(
                       title: Text("$res"),
                       onTap: () {
+                        //TODO: создание MaterialPage - лучше в отдельный класс.
                         Navigator.of(context).push(MaterialPageRoute(
                             builder: (context) => BlocProvider(
                                 create: (BuildContext context) =>

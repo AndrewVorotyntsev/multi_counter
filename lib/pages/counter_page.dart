@@ -24,7 +24,7 @@ class _CounterPageState extends State<CounterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
+    return MaterialApp( //У тебя уже есть материал апп - зачем здесь второй?
       home: Scaffold(
         appBar: AppBar(
           title: Text("Counter"),
@@ -57,6 +57,7 @@ class _CounterPageState extends State<CounterPage> {
                 heroTag: "addBtn",
                 //onPressed: _incrementCounter,
                 onPressed: () {
+                  // эти две строки я бы связал по-другому: либо объединив в один блок, либо подписав один блок на другой.
                   context.read<CounterBloc>().add(ChangeValueEvent(index, 1));
                   context.read<CountersListBloc>().add(GetCountersEvent());
                 }, //context.read<CounterBloc>().add(ChangeValueEvent(index, 1)),
@@ -70,6 +71,7 @@ class _CounterPageState extends State<CounterPage> {
                 heroTag: "remBtn",
                 //onPressed: _decrementCounter,
                 onPressed: () {
+                  // и с этими так же.
                   context.read<CounterBloc>().add(ChangeValueEvent(index, -1));
                   context.read<CountersListBloc>().add(GetCountersEvent());
                 },
