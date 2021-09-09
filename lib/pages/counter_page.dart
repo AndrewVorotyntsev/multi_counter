@@ -5,6 +5,7 @@ import 'package:multi_counter/bloc/events/counters_list_events.dart';
 
 import 'package:multi_counter/bloc/counter_bloc.dart';
 import 'package:multi_counter/bloc/events/counter_events.dart';
+import 'package:multi_counter/model/CounterData.dart';
 
 class CounterPage extends StatefulWidget {
   int index;
@@ -29,23 +30,24 @@ class _CounterPageState extends State<CounterPage> {
         appBar: AppBar(
           title: Text("Counter"),
         ),
-        body: Center(
-          child: Column(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Text(
-                'You have pushed the button this many times:',
-              ),
-              BlocBuilder<CounterBloc, int>(
-                /* state: int count */
-                builder: (BuildContext context, int count) {
-                  return Center(
-                    child: Text('$count', style: TextStyle(fontSize: 60)),
-                  );
-                },
-              ),
-            ],
-          ),
+        body: BlocBuilder<CounterBloc, CounterData>(
+          /* state: int count */
+          builder: (BuildContext context, CounterData count) {
+            return Center(
+                child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: <Widget>[
+                  Padding(
+                    padding: EdgeInsets.symmetric(vertical: 16),
+                    child:
+                        Text('${count.name}', style: TextStyle(fontSize: 40)),
+                  ),
+                  Center(
+                    child:
+                        Text('${count.count}', style: TextStyle(fontSize: 30)),
+                  ),
+                ]));
+          },
         ),
         floatingActionButton: Column(
           crossAxisAlignment: CrossAxisAlignment.end,
@@ -53,33 +55,107 @@ class _CounterPageState extends State<CounterPage> {
           children: <Widget>[
             Padding(
               padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: FloatingActionButton(
-                heroTag: "addBtn",
-                //onPressed: _incrementCounter,
-                onPressed: () {
-                  context.read<CounterBloc>().add(ChangeValueEvent(index, 1));
-                  context.read<CountersListBloc>().add(GetCountersEvent());
-                }, //context.read<CounterBloc>().add(ChangeValueEvent(index, 1)),
-                tooltip: 'Increment',
-                child: Icon(Icons.add),
+              child: GestureDetector(
+                onLongPress: () {
+                  _createDialog(context, 1);
+                },
+                child: InkWell(
+                  splashColor: Colors.blue,
+                  child: FloatingActionButton(
+                    heroTag: "addBtn",
+                    //onPressed: _incrementCounter,
+                    onPressed: () {
+                      context
+                          .read<CounterBloc>()
+                          .add(ChangeValueEvent(index, 1));
+                      context.read<CountersListBloc>().add(GetCountersEvent());
+                    }, //context.read<CounterBloc>().add(ChangeValueEvent(index, 1)),
+                    //tooltip: 'Increment',
+                    child: Icon(Icons.add),
+                  ),
+                ),
               ),
             ),
             Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: FloatingActionButton(
-                heroTag: "remBtn",
-                //onPressed: _decrementCounter,
-                onPressed: () {
-                  context.read<CounterBloc>().add(ChangeValueEvent(index, -1));
-                  context.read<CountersListBloc>().add(GetCountersEvent());
-                },
-                tooltip: 'Increment',
-                child: Icon(Icons.remove),
-              ),
-            ),
+                padding: const EdgeInsets.symmetric(vertical: 5.0),
+                child: GestureDetector(
+                    onLongPress: () {
+                      _createDialog(context, -1);
+                    },
+                    child: InkWell(
+                      splashColor: Colors.blue,
+                      child: FloatingActionButton(
+                        heroTag: "remBtn",
+                        //onPressed: _decrementCounter,
+                        onPressed: () {
+                          context
+                              .read<CounterBloc>()
+                              .add(ChangeValueEvent(index, -1));
+                          context
+                              .read<CountersListBloc>()
+                              .add(GetCountersEvent());
+                        },
+                        child: Icon(Icons.remove),
+                      ),
+                    ))),
           ],
-        ), // This trailing comma makes auto-formatting nicer for build methods.
-      ),
+        ),
+      ), // This trailing comma makes auto-formatting nicer for build methods.
     );
+  }
+
+  _createDialog(BuildContext context, int sign) {
+
+    BuildContext c = context;
+
+    // context
+    //     .read<CounterBloc>()
+    //     .add(ChangeValueEvent(index, 100 * sign));
+
+    TextEditingController countController = TextEditingController();
+    countController.text = "${1}";
+
+    return showDialog(
+        context: context,
+        builder: (context) {
+          return AlertDialog(
+            title: Text((() {
+              if (sign == 1) {
+                return "Увеличить счет";
+              } else {
+                return "Уменьшить счет";
+              }
+            })()),
+            content: TextField(
+              keyboardType: TextInputType.number,
+              decoration: InputDecoration(
+                labelText: "",
+                border: OutlineInputBorder(),
+                hintText: 'Не увеличивать',
+              ),
+              controller: countController,
+            ),
+            actions: <Widget>[
+              MaterialButton(
+                child: Text("Назад"),
+                onPressed: () {
+                  Navigator.of(context).pop();
+                },
+              ),
+              MaterialButton(
+                child: Text("Ок"),
+                onPressed: () {
+                  c
+                      .read<CounterBloc>()
+                      .add(ChangeValueEvent(index, int.parse(countController.text) * sign));
+                  c
+                      .read<CountersListBloc>()
+                      .add(GetCountersEvent());
+                  Navigator.of(context).pop();
+                },
+              ),
+            ],
+          );
+        });
   }
 }

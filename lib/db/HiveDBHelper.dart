@@ -1,43 +1,51 @@
 import 'package:hive/hive.dart';
+import 'package:multi_counter/db/counter_model.dart';
+import 'package:multi_counter/model/CounterData.dart';
 
 import 'DBHelper.dart';
 
 class HiveDBHelper implements DBHelper {
   @override
-  void addNewCounter() {
-    var box = Hive.box("counter");
-    box.add(0);
+  void addNewCounter(String name, int count) {
+    var box = Hive.box<CounterModel>("counter");
+    CounterModel counterModel = CounterModel()
+      ..name = name
+      ..count = count;
+    box.add(counterModel);
   }
 
   @override
-  List<int> getListCounters() {
-    List<int> list = [];
-    var box = Hive.box("counter");
+  List<CounterData> getListCounters() {
+    List<CounterData> list = [];
+    var box = Hive.box<CounterModel>("counter");
     for (int index = 0; index < box.values.length; index++) {
-      list.add(box.getAt(index));
+      CounterModel? counterModel = box.getAt(index);
+      CounterData counterData =
+          CounterData(counterModel!.name, counterModel.count);
+      list.add(counterData);
     }
-    print(list);
     return list;
   }
 
   @override
   void changeCounterValue(int index, int change) {
-    var box = Hive.box("counter");
-    int i = box.getAt(index) ?? 0;
-    i = i + change;
-    box.putAt(index, i);
+    var box = Hive.box<CounterModel>("counter");
+    CounterModel? counterModel = box.getAt(index);
+    counterModel!.count = counterModel.count + change;
+    counterModel.save();
   }
 
   @override
-  int getValue(int index) {
-    var box = Hive.box("counter");
-    int i = box.getAt(index);
-    return i;
+  CounterData getCounter(int index) {
+    var box = Hive.box<CounterModel>("counter");
+    CounterModel? counterModel = box.getAt(index);
+    CounterData counterData = CounterData(counterModel!.name, counterModel.count);
+    return counterData;
   }
 
   @override
   void deleteCounter(int index) {
-    var box = Hive.box("counter");
+    var box = Hive.box<CounterModel>("counter");
     box.deleteAt(index);
   }
 }

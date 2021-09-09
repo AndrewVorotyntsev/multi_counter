@@ -5,10 +5,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'bloc/counters_list_bloc.dart';
 import 'bloc/events/counters_list_events.dart';
+import 'db/counter_model.dart';
 
 void main() async {
   await Hive.initFlutter();
-  await Hive.openBox("counter");
+  Hive.registerAdapter(CounterModelAdapter());
+  await Hive.openBox<CounterModel>("counter");
+
 
   runApp(MyApp());
 }
