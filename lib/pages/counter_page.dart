@@ -1,15 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:multi_counter/bloc/counters_list_bloc.dart';
-import 'package:multi_counter/bloc/events/counters_list_events.dart';
-
 import 'package:multi_counter/bloc/counter_bloc.dart';
-import 'package:multi_counter/bloc/events/counter_events.dart';
+import 'package:multi_counter/bloc/events/counter_event.dart';
 import 'package:multi_counter/model/CounterData.dart';
 
 class CounterPage extends StatefulWidget {
-  int index;
-
+  final int index;
+  
   CounterPage({required this.index});
 
   @override
@@ -25,92 +22,79 @@ class _CounterPageState extends State<CounterPage> {
 
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        appBar: AppBar(
-          title: Text("Counter"),
-        ),
-        body: BlocBuilder<CounterBloc, CounterData>(
-          /* state: int count */
-          builder: (BuildContext context, CounterData count) {
-            return Center(
+    return BlocBuilder<CounterBloc, List<CounterData>>(
+        builder: (context, List<CounterData> list) {
+          CounterData data = list.elementAt(index);
+          return Scaffold(
+            appBar: AppBar(
+              title: Text("Counter"),
+            ),
+            body: Center(
                 child: Column(
                     mainAxisAlignment: MainAxisAlignment.center,
                     children: <Widget>[
-                  Padding(
-                    padding: EdgeInsets.symmetric(vertical: 16),
-                    child:
-                        Text('${count.name}', style: TextStyle(fontSize: 40)),
-                  ),
-                  Center(
-                    child:
-                        Text('${count.count}', style: TextStyle(fontSize: 30)),
-                  ),
-                ]));
-          },
-        ),
-        floatingActionButton: Column(
-          crossAxisAlignment: CrossAxisAlignment.end,
-          mainAxisAlignment: MainAxisAlignment.end,
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(vertical: 5.0),
-              child: GestureDetector(
-                onLongPress: () {
-                  _createDialog(context, 1);
-                },
-                child: InkWell(
-                  splashColor: Colors.blue,
-                  child: FloatingActionButton(
-                    heroTag: "addBtn",
-                    //onPressed: _incrementCounter,
-                    onPressed: () {
-                      context
-                          .read<CounterBloc>()
-                          .add(ChangeValueEvent(index, 1));
-                      context.read<CountersListBloc>().add(GetCountersEvent());
-                    }, //context.read<CounterBloc>().add(ChangeValueEvent(index, 1)),
-                    //tooltip: 'Increment',
-                    child: Icon(Icons.add),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-                padding: const EdgeInsets.symmetric(vertical: 5.0),
-                child: GestureDetector(
+                      Padding(
+                        padding: EdgeInsets.symmetric(vertical: 16),
+                        child:
+                        Text('${data.name}', style: TextStyle(fontSize: 40)),
+                      ),
+                      Center(
+                        child:
+                        Text('${data.count}', style: TextStyle(fontSize: 30)),
+                      ),
+                    ])),
+            floatingActionButton: Column(
+              crossAxisAlignment: CrossAxisAlignment.end,
+              mainAxisAlignment: MainAxisAlignment.end,
+              children: <Widget>[
+                Padding(
+                  padding: const EdgeInsets.symmetric(vertical: 5.0),
+                  child: GestureDetector(
                     onLongPress: () {
-                      _createDialog(context, -1);
+                      _createDialog(context, 1);
                     },
                     child: InkWell(
                       splashColor: Colors.blue,
                       child: FloatingActionButton(
-                        heroTag: "remBtn",
-                        //onPressed: _decrementCounter,
+                        heroTag: "addBtn",
                         onPressed: () {
                           context
                               .read<CounterBloc>()
-                              .add(ChangeValueEvent(index, -1));
-                          context
-                              .read<CountersListBloc>()
-                              .add(GetCountersEvent());
+                              .add(ChangeValueEvent(index, 1));
                         },
-                        child: Icon(Icons.remove),
+                        //tooltip: 'Increment',
+                        child: Icon(Icons.add),
                       ),
-                    ))),
-          ],
-        ),
-      ), // This trailing comma makes auto-formatting nicer for build methods.
-    );
+                    ),
+                  ),
+                ),
+                Padding(
+                    padding: const EdgeInsets.symmetric(vertical: 5.0),
+                    child: GestureDetector(
+                        onLongPress: () {
+                          _createDialog(context, -1);
+                        },
+                        child: InkWell(
+                          splashColor: Colors.blue,
+                          child: FloatingActionButton(
+                            heroTag: "remBtn",
+                            onPressed: () {
+                              context
+                                  .read<CounterBloc>()
+                                  .add(ChangeValueEvent(index, -1));
+                            },
+                            child: Icon(Icons.remove),
+                          ),
+                        ))),
+              ],
+            ),
+          );
+        });
   }
 
   _createDialog(BuildContext context, int sign) {
 
-    BuildContext c = context;
-
-    // context
-    //     .read<CounterBloc>()
-    //     .add(ChangeValueEvent(index, 100 * sign));
+    //BuildContext c = context;
 
     TextEditingController countController = TextEditingController();
     countController.text = "${1}";
@@ -131,7 +115,7 @@ class _CounterPageState extends State<CounterPage> {
               decoration: InputDecoration(
                 labelText: "",
                 border: OutlineInputBorder(),
-                hintText: 'Не увеличивать',
+                hintText: 'Не изменять',
               ),
               controller: countController,
             ),
@@ -145,12 +129,9 @@ class _CounterPageState extends State<CounterPage> {
               MaterialButton(
                 child: Text("Ок"),
                 onPressed: () {
-                  c
+                  context
                       .read<CounterBloc>()
-                      .add(ChangeValueEvent(index, int.parse(countController.text) * sign));
-                  c
-                      .read<CountersListBloc>()
-                      .add(GetCountersEvent());
+                      .add(ChangeValueEvent(index, sign * int.parse(countController.text)));
                   Navigator.of(context).pop();
                 },
               ),

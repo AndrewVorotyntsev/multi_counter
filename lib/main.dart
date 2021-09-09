@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi_counter/pages/counter_list.dart';
 import 'package:hive_flutter/hive_flutter.dart';
 
-import 'bloc/counters_list_bloc.dart';
-import 'bloc/events/counters_list_events.dart';
+import 'bloc/counter_bloc.dart';
+import 'bloc/events/counter_event.dart';
 import 'db/counter_model.dart';
 
 void main() async {
@@ -21,7 +21,7 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return BlocProvider(
         create: (BuildContext context) =>
-            CountersListBloc()..add(GetCountersEvent()),
+        CounterBloc()..add(GetCountersEvent()),
         child: MaterialApp(
           title: 'Flutter Demo',
           theme: ThemeData(
