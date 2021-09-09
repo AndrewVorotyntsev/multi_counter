@@ -5,13 +5,13 @@ import 'package:hive_flutter/hive_flutter.dart';
 
 import 'bloc/counter_bloc.dart';
 import 'bloc/events/counter_event.dart';
+import 'theme/theme_cubit.dart';
 import 'db/counter_model.dart';
 
 void main() async {
   await Hive.initFlutter();
   Hive.registerAdapter(CounterModelAdapter());
   await Hive.openBox<CounterModel>("counter");
-
 
   runApp(MyApp());
 }
@@ -20,14 +20,20 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
-        create: (BuildContext context) =>
-        CounterBloc()..add(GetCountersEvent()),
-        child: MaterialApp(
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            primarySwatch: Colors.blue,
-          ),
-          home: CounterListPage(),
+        create: (_) => ThemeCubit(),
+        child: BlocBuilder<ThemeCubit, ThemeData>(
+            builder: (_, theme) {
+              return BlocProvider(
+                  create: (BuildContext context) =>
+                  CounterBloc()
+                    ..add(GetCountersEvent()),
+                  child: MaterialApp(
+                    debugShowCheckedModeBanner: false,
+                    title: 'Flutter Demo',
+                    theme: theme,
+                    home: CounterListPage(),
+                  ));
+            }
         ));
   }
 }
