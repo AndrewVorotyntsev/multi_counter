@@ -3,6 +3,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi_counter/bloc/counter_bloc.dart';
 import 'package:multi_counter/bloc/events/counter_event.dart';
 import 'package:hive_flutter/hive_flutter.dart';
+import 'package:multi_counter/theme/theme_cubit.dart';
 import 'package:multi_counter/model/CounterData.dart';
 
 import 'counter_page.dart';
@@ -24,6 +25,15 @@ class _CounterListPageState extends State<CounterListPage> {
   Widget build(BuildContext context) {
     return Scaffold(
         appBar: AppBar(
+          actions: [
+            IconButton(
+              icon: ThemeCubit.isLight ? Icon(Icons.brightness_5) : Icon(Icons.brightness_3_rounded),
+              tooltip: 'Поменять тему',
+              onPressed: () {
+                 context.read<ThemeCubit>().toggleTheme();
+              },
+            ),
+          ],
           title: Text("Сounters"),
         ),
         body: BlocBuilder<CounterBloc, List<CounterData>>(
