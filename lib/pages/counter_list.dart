@@ -21,6 +21,7 @@ class _CounterListPageState extends State<CounterListPage> {
     super.dispose();
   }
 
+  // разбей метод на отдельные виджеты, их сделай приватными в рамках файла.
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -46,7 +47,7 @@ class _CounterListPageState extends State<CounterListPage> {
               return ListView.builder(
                 itemCount: list.length,
                 itemBuilder: (context, index) {
-                  CounterData? res = list.elementAt(index);
+                  CounterData? res = list.elementAt(index); // давай осмысленные названия переменным. res - в данном случае непонятен.
                   return Dismissible(
                     key: UniqueKey(),
                     child: ListTile(
@@ -83,6 +84,7 @@ class _CounterListPageState extends State<CounterListPage> {
         ));
   }
 
+//куда пропал возвращаемый тип?
   _createDialog(BuildContext context) {
     TextEditingController nameController = TextEditingController();
     TextEditingController countController = TextEditingController();

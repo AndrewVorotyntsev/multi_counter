@@ -34,6 +34,6 @@ class MyApp extends StatelessWidget {
                     home: CounterListPage(),
                   ));
             }
-        ));
+        )); // не забывай про trailling-comma
   }
 }

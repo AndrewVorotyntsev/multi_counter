@@ -4,10 +4,11 @@ import 'package:multi_counter/model/CounterData.dart';
 
 import 'DBHelper.dart';
 
+//Название файла поменяй) оно не оостветствует стилистике языка.
 class HiveDBHelper implements DBHelper {
   @override
   void addNewCounter(String name, int count) {
-    var box = Hive.box<CounterModel>("counter");
+    var box = Hive.box<CounterModel>("counter"); //box  можно открыть один раз и использовать после.
     CounterModel counterModel = CounterModel()
       ..name = name
       ..count = count;
