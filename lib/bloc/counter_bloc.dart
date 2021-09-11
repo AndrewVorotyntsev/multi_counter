@@ -10,7 +10,8 @@ class CounterBloc extends Bloc<CounterEvent, List<CounterData>> {
 
   @override
   Stream<List<CounterData>> mapEventToState(CounterEvent event) async* {
-    DBHelper dbHelper = HiveDBHelper();
+    DBHelper dbHelper = HiveDBHelper(); // Эту сущность лучше поставлять через консруктор. А не плодить новый экземпляр класса на каждый эвент.
+    // Почитай про Dependency Inversion
 
     if (event is AddNewCounterEvent) {
       dbHelper.addNewCounter(event.name, event.count);
