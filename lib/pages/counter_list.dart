@@ -3,8 +3,8 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:multi_counter/bloc/counter_bloc.dart';
 import 'package:multi_counter/bloc/events/counter_event.dart';
 import 'package:hive_flutter/hive_flutter.dart';
-import 'package:multi_counter/theme/theme_cubit.dart';
-import 'package:multi_counter/model/CounterData.dart';
+import 'package:multi_counter/bloc/theme_cubit.dart';
+import 'package:multi_counter/model/counter_data.dart';
 
 import 'counter_page.dart';
 
@@ -14,7 +14,6 @@ class CounterListPage extends StatefulWidget {
 }
 
 class _CounterListPageState extends State<CounterListPage> {
-
   @override
   void dispose() async {
     Hive.close();
@@ -26,13 +25,7 @@ class _CounterListPageState extends State<CounterListPage> {
     return Scaffold(
         appBar: AppBar(
           actions: [
-            IconButton(
-              icon: ThemeCubit.isLight ? Icon(Icons.brightness_5) : Icon(Icons.brightness_3_rounded),
-              tooltip: 'Поменять тему',
-              onPressed: () {
-                 context.read<ThemeCubit>().toggleTheme();
-              },
-            ),
+            _ToggleThemeButton(),
           ],
           title: Text("Сounters"),
         ),
@@ -46,31 +39,8 @@ class _CounterListPageState extends State<CounterListPage> {
               return ListView.builder(
                 itemCount: list.length,
                 itemBuilder: (context, index) {
-                  CounterData? res = list.elementAt(index);
-                  return Dismissible(
-                    key: UniqueKey(),
-                    child: ListTile(
-                      title: Text((() {
-                        if (res.name.isEmpty) {
-                          return "${res.count}";
-                        } else {
-                          return "${res.name} : ${res.count}";
-                        }
-                      })()),
-                      onTap: () {
-                        Navigator.of(context).push(MaterialPageRoute(
-                            builder: (context) => CounterPage(index: index)));
-                      },
-                    ),
-                    background: Container(
-                      color: Colors.grey[200],
-                    ),
-                    onDismissed: (DismissDirection direction) {
-                      context
-                          .read<CounterBloc>()
-                          .add(DeleteCounterEvent(index));
-                    },
-                  );
+                  CounterData? counterData = list.elementAt(index);
+                  return _CounterTile(index, counterData);
                 },
               );
             }
@@ -83,7 +53,7 @@ class _CounterListPageState extends State<CounterListPage> {
         ));
   }
 
-  _createDialog(BuildContext context) {
+  Future _createDialog(BuildContext context) {
     TextEditingController nameController = TextEditingController();
     TextEditingController countController = TextEditingController();
     countController.text = "${0}";
@@ -128,14 +98,63 @@ class _CounterListPageState extends State<CounterListPage> {
               MaterialButton(
                 child: Text("Ок"),
                 onPressed: () {
-                  context
-                      .read<CounterBloc>()
-                      .add(AddNewCounterEvent(nameController.text.trim(), int.parse(countController.text.trim())));
+                  context.read<CounterBloc>().add(AddNewCounterEvent(
+                      nameController.text.trim(),
+                      int.parse(countController.text.trim())));
                   Navigator.of(context).pop();
                 },
               ),
             ],
           );
         });
+  }
+}
+
+class _ToggleThemeButton extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return IconButton(
+      icon: ThemeCubit.isLight
+          ? Icon(Icons.brightness_5)
+          : Icon(Icons.brightness_3_rounded),
+      tooltip: 'Поменять тему',
+      onPressed: () {
+        context.read<ThemeCubit>().toggleTheme();
+      },
+    );
+  }
+}
+
+class _CounterTile extends StatelessWidget {
+  final int index;
+
+  final CounterData counterData;
+
+  _CounterTile(this.index, this.counterData);
+
+  @override
+  Widget build(BuildContext context) {
+    return Dismissible(
+      key: UniqueKey(),
+      child: ListTile(
+        title: Text((() {
+          if (counterData.name.isEmpty) {
+            return "${counterData.count}";
+          } else {
+            return "${counterData.name} : ${counterData.count}";
+          }
+        })()),
+        onTap: () {
+          Navigator.of(context).push(MaterialPageRoute(
+              builder: (context) => CounterPage(index: index)));
+        },
+      ),
+      background: Container(
+        color: Colors.grey[200],
+      ),
+      onDismissed: (DismissDirection direction) {
+        context.read<CounterBloc>().add(DeleteCounterEvent(index));
+      },
+    );
   }
 }

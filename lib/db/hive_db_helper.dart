@@ -1,13 +1,19 @@
 import 'package:hive/hive.dart';
 import 'package:multi_counter/db/counter_model.dart';
-import 'package:multi_counter/model/CounterData.dart';
+import 'package:multi_counter/model/counter_data.dart';
 
-import 'DBHelper.dart';
+import 'db_helper.dart';
 
 class HiveDBHelper implements DBHelper {
+  late Box box;
+
+  HiveDBHelper() {
+    box = Hive.box<CounterModel>("counter");
+  }
+
   @override
   void addNewCounter(String name, int count) {
-    var box = Hive.box<CounterModel>("counter");
+    //var box = Hive.box<CounterModel>("counter");
     CounterModel counterModel = CounterModel()
       ..name = name
       ..count = count;
@@ -17,7 +23,7 @@ class HiveDBHelper implements DBHelper {
   @override
   List<CounterData> getListCounters() {
     List<CounterData> list = [];
-    var box = Hive.box<CounterModel>("counter");
+    //var box = Hive.box<CounterModel>("counter");
     for (int index = 0; index < box.values.length; index++) {
       CounterModel? counterModel = box.getAt(index);
       CounterData counterData =
@@ -29,7 +35,7 @@ class HiveDBHelper implements DBHelper {
 
   @override
   void changeCounterValue(int index, int change) {
-    var box = Hive.box<CounterModel>("counter");
+    //var box = Hive.box<CounterModel>("counter");
     CounterModel? counterModel = box.getAt(index);
     counterModel!.count = counterModel.count + change;
     counterModel.save();
@@ -37,15 +43,16 @@ class HiveDBHelper implements DBHelper {
 
   @override
   CounterData getCounter(int index) {
-    var box = Hive.box<CounterModel>("counter");
+    //var box = Hive.box<CounterModel>("counter");
     CounterModel? counterModel = box.getAt(index);
-    CounterData counterData = CounterData(counterModel!.name, counterModel.count);
+    CounterData counterData =
+        CounterData(counterModel!.name, counterModel.count);
     return counterData;
   }
 
   @override
   void deleteCounter(int index) {
-    var box = Hive.box<CounterModel>("counter");
+    //var box = Hive.box<CounterModel>("counter");
     box.deleteAt(index);
   }
 }

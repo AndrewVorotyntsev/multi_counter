@@ -1,4 +1,4 @@
-import 'package:multi_counter/model/CounterData.dart';
+import 'package:multi_counter/model/counter_data.dart';
 
 abstract class DBHelper {
   void addNewCounter(String name, int count);
